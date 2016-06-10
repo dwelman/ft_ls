@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:36:58 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/10 10:31:34 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/10 12:03:29 by daviwel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,20 @@ void	ls_none(t_info *info)
 			info->dir = opendir(info->argv[++info->i]);
 		}
 	else
-		while ((dent = readdir(info->dir)) != NULL || info->f_a == 1)
-			if (*dent->d_name != '.')
+		while ((dent = readdir(info->dir)) != NULL)
+			if (*dent->d_name != '.' || info->f_a == 1)
 				ft_printf("%s\n", dent->d_name);
 }
 
 void	handle_disp(t_info *info)
 {
-	if (info->f_rec == 1)
+	if (info->f_t == 1)
 	{
-
+		sort_print(info);
+	}
+	else
+	{
+		ls_none(&info);
 	}
 }
 
@@ -73,7 +77,7 @@ int		main(int argc, char **argv)
 	}
 	else
 		info.dir = opendir(info.argv[info.i]);
-	ls_none(&info);
+	handle_disp(&info);
 	if (info.dir != NULL)
 		closedir(info.dir);
 	return (0);
