@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:36:58 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/09 13:46:44 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/10 08:31:55 by daviwel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ls_none(t_info *info)
 				ft_printf("%s:\n", info->argv[info->i]);
 				while ((dent = readdir(info->dir)) != NULL)
 				{
-					if (*dent->d_name != '.')
+					if (*dent->d_name != '.' || info->f_a == 1)
 						ft_printf("%s\n", dent->d_name);
 				}
 				if (info->i < info->argc - 1)
@@ -36,7 +36,7 @@ void	ls_none(t_info *info)
 		}
 	else
 		while ((dent = readdir(info->dir)) != NULL)
-			if (*dent->d_name != '.')
+			if (*dent->d_name != '.' || info->f_a == 1)
 				ft_printf("%s\n", dent->d_name);
 }
 
@@ -56,27 +56,24 @@ int		main(int argc, char **argv)
 	init_info(&info, argc, argv);
 	done = 0;
 	info.i = 1;
-	if (info.argc == 1)
+	while (info.i < info.argc && done == 0)
+	{
+		if (info.argv[info.i][0] == '-')
+		{
+			get_flags(&info, info.argv[info.i]);
+			info.i++;
+		}
+		else
+			done = 1;
+	}
+	if (info.i >= info.argc)
 	{
 		info.dir = opendir(".");
-		if (info.dir != NULL)
-			ls_none(&info);
-		else
-			ft_putstr("Error : ft_ls");
+		info.i = 1;
 	}
 	else
-	{
-		while (info.i < info.argc && done == 0)
-			if (info.argv[info.i][0] == '-')
-			{
-				get_flags(&info, info.argv[info.i]);
-				info.i++;
-			}
-			else
-				done = 1;
 		info.dir = opendir(info.argv[info.i]);
-		ls_none(&info);
-	}
+	ls_none(&info);
 	if (info.dir != NULL)
 		closedir(info.dir);
 	return (0);
