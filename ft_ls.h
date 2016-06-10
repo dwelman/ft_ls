@@ -6,14 +6,14 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:38:24 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/10 10:27:29 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/10 11:50:59 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_LS_H
 # define FT_LS_H
 
-# include "libft.h"
+# include "libft/libft.h"
 # include <dirent.h>
 # include <time.h>
 
@@ -33,5 +33,7 @@ typedef struct	s_info
 void			get_flags(t_info *info, char *str);
 
 void			init_info(t_info *info, int argc, char **argv);
+
+int				ft_count_files(char *path, int all);
 
 #endif
