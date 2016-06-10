@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:38:24 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/10 09:04:14 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/10 09:39:04 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include "libft.h"
 # include <dirent.h>
+# include <time.h>
+
 
 typedef struct	s_list
 {
@@ -31,8 +33,8 @@ typedef struct	s_info
 	int			f_t;
 	int			i;
 	int			argc;
+	t_list		*start;
 	char		**argv;
-	DIR			*dir;
 }				t_info;
 
 typedef struct	s_file
@@ -42,6 +44,7 @@ typedef struct	s_file
 	char		*username;
 	char		*groupname;
 	char		*date;
+	time_t		time;
 	char		permissions[12];
 	int			byte_size;
 	int			block_size;
