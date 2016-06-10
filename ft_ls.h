@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:38:24 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/10 11:50:59 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/10 12:34:35 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,8 @@ void			get_flags(t_info *info, char *str);
 void			init_info(t_info *info, int argc, char **argv);
 
 int				ft_count_files(char *path, int all);
+
+void			bubblesort(t_time **times, char **files,
+					int elem, int (*cmp)(void*, void*));
 
 #endif
