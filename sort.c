@@ -6,7 +6,7 @@
 /*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 08:38:23 by ddu-toit          #+#    #+#             */
-/*   Updated: 2016/06/10 12:33:21 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/11 10:54:04 by daviwel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int		cmp(time_t f1,  time_t f2)
 		return (1);
 }
 
-void	bubblesort(t_time **times, char **files,
-		int elem, int (*cmp)(void*, void*))
+void	bubblesort(time_t **times, char **files,
+		int elem, int (*cmp)(time_t, time_t))
 {
 	int		i;
 	int		swapped;
