@@ -6,7 +6,7 @@
 /*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 15:28:30 by ddu-toit          #+#    #+#             */
-/*   Updated: 2016/06/10 17:17:19 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/11 08:55:26 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	list_view_print(struct stat stats, struct dirent *cur, t_info *info)
 	ft_bzero(&mtime[ft_strlen(mtime) - 9], 9);
 	ft_printf("\t%s", mtime);
 	ft_printf("\t%s\n", cur->d_name);
-	
+
   //  printf("File inode: \t\t%d\n",stats.st_ino);
    	//else errors
 }
@@ -53,17 +53,20 @@ char	*build_path(struct dirent *cur, char **path, int fr)
 	
 }
 
-void	subdir_list(char *path, t_info *info)
+int		subdir_list(char *path, t_info *info)
 {
 	struct dirent	*cur;
 	DIR				*dir;
 	struct stat		stats;
 	char			*f_path;
-	
+	int				fnd;
+
+	fnd = 0;
+	ft_printf("path = %s\n", path);
 	if (path)
 	{
 		dir = opendir(path);
-		while ((cur = readdir(dir)) != NULL)
+		while (dir && (cur = readdir(dir)) != NULL)
 		{
 			f_path = build_path(cur, &path, 0);
 			stat(f_path , &stats);
@@ -94,7 +97,7 @@ void	list_path(char *path, t_info *info)
 			f_path = build_path(cur, &path, 0);
 			stat(f_path , &stats);
 			free(f_path);
-			if (info->f_lst && *cur->d_name != '.' || info->f_a)
+			if ((info->f_lst && *cur->d_name != '.') || info->f_a)
 			{
 				if (info->f_t == 0)
 					list_view_print(stats, cur, info);
