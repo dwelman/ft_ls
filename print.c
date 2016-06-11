@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 12:04:45 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/11 10:52:15 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/11 11:07:53 by daviwel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	sort_print(t_info *info)
 				}
 				if (info->i < info->argc - 1)
 					ft_putchar('\n');
-				bubblesort(times, files, i, &cmp);
+				//bubblesort(times, files, i, &cmp);
 			}
 			else
 				ft_printf("%s : No such file or directory\n", info->argv[info->i]);
