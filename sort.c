@@ -6,13 +6,13 @@
 /*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 08:38:23 by ddu-toit          #+#    #+#             */
-/*   Updated: 2016/06/11 10:54:04 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/13 09:04:22 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void swap_file(void **f1, void **f2)
+void	swap_char(char **f1, char **f2)
 {
 	char	*temp;
 
@@ -21,49 +21,53 @@ void swap_file(void **f1, void **f2)
 	*f2 = temp;
 }
 
-void
-
-int		rev_cmp(time_t f1,  time_t f2)
+void	swap_stat(struct stat **f1, struct stat **f2)
 {
-	if (ft_atoi(f1) > ft_atoi(f2))
+	struct stat	*temp;
+
+	temp = *f1;
+	*f1 = *f2;
+	*f2 = temp;
+}
+
+int		rev_cmp(time_t f1, time_t f2)
+{
+	if ((long int)f1 > (long int)f2)
 		return (1);
 	else
 		return (0);
 }
 
-int		cmp(time_t f1,  time_t f2)
+int		cmp(time_t f1, time_t f2)
 {
-	if (ft_atoi(f1) < ft_atoi(f2))
-		return (0);
-	else
+	if ((long int)f1 < (long int)f2)
 		return (1);
+	else
+		return (0);
 }
 
-void	bubblesort(time_t **times, char **files,
-		int elem, int (*cmp)(time_t, time_t))
+void	bubblesort(t_info *info, int filec, int (*cmp)(time_t, time_t))
 {
 	int		i;
 	int		swapped;
-	char	*fn;
-	char	*tm
 
 	i = 0;
-	fn = *files;
-	tm = *times;
 	swapped = 1;
 	while (swapped)
 	{
 		swapped = 0;
-		while (i + 1 < elem)
+		while (i + 1 < filec)
 		{
-			if (cmp(tm[i], tm[i + 1]))
+			if (cmp(info->stats[i]->st_mtime, info->stats[i + 1]->st_mtime))
 			{
-				swap(&tm[i], &tm[i + 1]);
-				swap(&files[i], &files[i + 1]);
+				swap_char(&info->file[i], &info->file[i + 1]);
+				if (info->f_lst)
+					swap_char(&info->list[i], &info->list[i + 1]);
+				swap_stat(&info->stats[i], &info->stats[i + 1]);
 				swapped = 1;
 			}
 			i++;
 		}
 		i = 0;
-    }
+	}
 }

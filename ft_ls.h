@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:38:24 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/11 16:36:27 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/13 12:34:17 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ typedef struct	s_info
 	struct stat		**stats;
 	char			**file;
 	char			**list;
+	char			**size;
+	char			*f_path;
 	int				f;
+	int				blksize;
 }				t_info;
 
 void			get_flags(t_info *info, char *str);
@@ -59,8 +62,12 @@ void			list_view_print(struct stat stats, struct dirent *cur,
 void			build_l(struct stat stats, struct dirent *cur,
 					t_info *info, int i);
 
-int				rev_cmp(time_t f1,  time_t f2);
+int				rev_cmp(time_t f1, time_t f2);
 
-int				cmp(time_t f1,  time_t f2);
+int				cmp(time_t f1, time_t f2);
+
+void			cleanup(t_info *info, int filec);
+
+void			pad_size(t_info *info, int filec);
 
 #endif

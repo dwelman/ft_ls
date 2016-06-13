@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 11:44:14 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/11 14:49:31 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/13 10:46:17 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,4 +22,20 @@ void	init_info(t_info *info, int argc, char **argv)
 	info->argc = argc;
 	info->argv = argv;
 	info->flags = 0;
+}
+
+void	cleanup(t_info *info, int filec)
+{
+	int	i;
+
+	i = -1;
+	while (++i < filec)
+	{
+		free(info->file[i]);
+		free(info->list[i]);
+		free(info->size[i]);
+	}
+	free(info->file);
+	free(info->list);
+	free(info->size);
 }

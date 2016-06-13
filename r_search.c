@@ -6,7 +6,7 @@
 /*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 15:28:30 by ddu-toit          #+#    #+#             */
-/*   Updated: 2016/06/11 15:48:52 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/13 12:19:45 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ void	subdir_list(char *path, t_info *info)
 
 char	*init_dir_inf(t_info *info, char *path, int *f)
 {
+	info->blksize = 0;
 	*f = ft_count_files(path, 1);
 	info->stats = (struct stat**)malloc(sizeof(struct stat*) * *f + 1);
 	info->list = (char**)malloc(sizeof(char*) * *f + 1);
 	info->file = (char**)malloc(sizeof(char*) * *f + 1);
+	info->size = (char**)malloc(sizeof(char*) * *f + 1);
 	if (info->f_rec)
 		ft_printf("\n%s\n", path);
 	return (ft_strdup(path));
@@ -70,13 +72,16 @@ char	*init_dir_inf(t_info *info, char *path, int *f)
 
 void	store_stat(t_info *info, struct dirent *cur, char *c_path, int i)
 {
-	char	*f_path;
+	char		*f_path;
+	struct stat	*stat_l;
 
-	f_path = build_path(cur, c_path);
+	info->f_path = build_path(cur, c_path);
 	info->stats[i] = (struct stat*)malloc(sizeof(struct stat));
-	stat(f_path, info->stats[i]);
-	free(f_path);
+	lstat(info->f_path, info->stats[i]);
+	if (*cur->d_name != '.')
+		info->blksize += (int)(info->stats[i]->st_blocks);
 	build_l(*info->stats[i], cur, info, i);
+	free(info->f_path);
 }
 
 void	list_path(char *path, t_info *info)
