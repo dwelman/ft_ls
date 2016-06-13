@@ -6,11 +6,17 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 09:19:14 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/09 13:32:04 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/11 15:09:57 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+void	illegal(char stri)
+{
+	ft_printf("./ft_ls: illegal option -- %c\n", stri);
+	exit(-1);
+}
 
 void	get_flags(t_info *info, char *str)
 {
@@ -34,10 +40,7 @@ void	get_flags(t_info *info, char *str)
 		else if (str[i] == '-' && is_dash == 0)
 			is_dash = 1;
 		else
-		{
-			ft_printf("./ft_ls: illegal option -- %c\n", str[i]);
-			exit(-1);
-		}
+			illegal(str[i]);
 		i++;
 	}
 }
