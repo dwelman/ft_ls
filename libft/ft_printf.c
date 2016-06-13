@@ -3,138 +3,142 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/23 07:42:51 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/03 09:15:46 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/23 09:37:09 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/27 10:03:23 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
+#include <stdio.h>
 
-char		*ft_convert(uintmax_t num, int base, int code)
+static const char	*scan_flags(const char *off, t_flags *fl)
 {
-	static char	buff[50];
-	char		*ptr;
-
-	ptr = &buff[49];
-	*ptr = '\0';
-	if (code == 0)
+	while (is_pflag(*off) && *off)
 	{
-		if (num == 0)
-			*--ptr = '0';
-		while (num != 0)
+		if (!(fl->plus))
+			fl->plus = (*off == '+');
+		if (fl->ip == 0)
+			fl->ip = (*off == '.');
+		if (ft_isdigit(*off))
 		{
-			*--ptr = "0123456789abcdef"[num % base];
-			num /= base;
+			if (fl->ip)
+			{
+				fl->prec = ft_atoi(off);
+				off += ft_strlen(ft_itoa(fl->prec));
+			}
+			else
+			{
+				fl->padding = ft_atoi(off);
+				off += ft_strlen(ft_itoa(fl->padding));
+			}
 		}
+		else
+			off++;
 	}
-	else
-		while (num != 0)
-		{
-			if (num == 0)
-				*--ptr = '0';
-			*--ptr = "0123456789ABCDEF"[num % base];
-			num /= base;
-		}
-	return (ptr);
+	return (off);
 }
 
-char		*ft_convert_u(size_t num, int base, int code)
+static t_flags		get_flags(const char *str, int *offset)
 {
-	static char	buff[50];
-	char		*ptr;
+	t_flags		fl;
+	const char	*off;
 
-	ptr = &buff[49];
-	*ptr = '\0';
-	if (code == 0)
-	{
-		if (num == 0)
-			*--ptr = '0';
-		while (num != 0)
-		{
-			*--ptr = "0123456789abcdef"[num % base];
-			num /= base;
-		}
-	}
-	else
-		while (num != 0)
-		{
-			if (num == 0)
-				*--ptr = '0';
-			*--ptr = "0123456789ABCDEF"[num % base];
-			num /= base;
-		}
-	return (ptr);
+	fl = init_flags();
+	fl.minus = (*str == '-');
+	fl.hash = (*str == '#');
+	fl.zero = (*str == '0' && fl.minus == 0 && fl.plus == 0);
+	fl.space = (*str == ' ' && fl.plus == 0);
+	off = str + (fl.minus || fl.hash || fl.zero || fl.space);
+	off = scan_flags(off, &fl);
+	*offset = off - str;
+	fl.has_flags = (fl.minus || fl.plus || fl.zero || fl.hash
+			|| fl.space || fl.prec);
+	if (fl.zero && fl.ip == 0)
+		fl.pad = '0';
+	return (fl);
 }
 
-int			ft_printaux(char *cr, va_list args, t_flags flags)
+static t_mods		get_modifiers(const char *str, int *offset)
 {
-	int	count;
+	int		i;
+	t_mods	md;
 
-	count = 0;
-	if (*cr == 'p')
+	i = 0;
+	md = init_mods();
+	str += *offset;
+	while (is_pmodifier(str[i]) && str[i] != '\0')
 	{
-		flags.address = 1;
-		count += ft_padstr(ft_convert((UI)va_arg(args, void *), 16, 0), flags);
+		if (str[i] == 'z')
+			md.zee++;
+		if (str[i] == 'j')
+			md.jay++;
+		if (str[i] == 'l')
+			md.ln++;
+		if (str[i] == 'u')
+			md.u_sign = 1;
+		if (str[i] == 'h')
+			md.sht++;
+		i++;
 	}
-	else if (*cr == 'c')
-		count += ft_padchar(va_arg(args, int), flags);
-	else if (*cr == 'C' || (*cr == 'c' && flags.is_long > 0))
-		count += ft_padchar((char)va_arg(args, wchar_t), flags);
-	return (count);
+	md.has_mod = (md.ln || md.u_sign || md.sht || md.zee || md.jay);
+	*offset -= (md.ln && md.u_sign && is_pnumeric(str[i]) == 0);
+	*offset += i;
+	return (md);
 }
 
-static int	ft_handleprint(va_list args, char *cr, t_flags flags)
+static int			get_type(const char *str, va_list *args, int *len)
 {
-	int			count;
-
-	count = 0;
-	if (*cr == 'o' || *cr == 'O')
-		flags.use_hasho = 1;
-	else if (*cr == 'x' || *cr == 'X')
-		flags.use_hashx = 1;
-	if (*cr == 's')
-	{
-		flags.is_string = 1;
-		count += ft_padstr(va_arg(args, char *), flags);
-	}
-	else if (*cr == 'S')
-	{
-		flags.is_string = 1;
-		flags.wide = 1;
-		count += ft_padstrwide(va_arg(args, wchar_t *), flags);
-	}
-	count += ft_printaux(cr, args, flags);
-	count += ft_di(cr, args, flags);
-	count += ft_uox(cr, args, flags);
-	return (count);
-}
-
-int			ft_printf(const char *format_str, ...)
-{
-	char	*cr;
-	va_list	args;
+	int		offset;
+	t_mods	mods;
 	t_flags	flags;
-	int		ret;
+	char	*output;
 
-	ret = 0;
-	cr = (char *)format_str;
-	va_start(args, format_str);
-	while (*cr != '\0')
+	offset = 0;
+	if (*str == '%')
 	{
-		if (*cr != '%')
-			ret += ft_putchar(*cr);
-		if (*cr == '%' && *(cr + 1) != '%')
-		{
-			flags = ft_getflags(flags, cr);
-			cr += flags.offset;
-			ret += ft_handleprint(args, cr, flags);
-		}
-		else if (*cr == '%' && *(cr + 1) == '%')
-			ret += ft_putchar('%');
-		cr++;
+		ft_putchar('%');
+		*len += 1;
+		return (offset + 1);
 	}
-	va_end(args);
-	return (ret);
+	flags = get_flags(str, &offset);
+	if (*str != 'u')
+		mods = get_modifiers(str, &offset);
+	str += offset;
+	if (mods.has_mod || *str == 'O' || *str == 'U' || *str == 'C')
+		output = ft_check_mod(str, mods, args);
+	else
+		output = ft_check(str, mods, args);
+	if (output)
+		*len += ft_out(*str, output, flags);
+	return (offset + 1);
+}
+
+int					ft_printf(const char *format, ...)
+{
+	const char		*trav;
+	unsigned int	offset;
+	va_list			arg;
+	int				len;
+
+	va_start(arg, format);
+	len = 0;
+	trav = format;
+	while (*trav != '\0')
+	{
+		while (*trav != '%' && *trav)
+		{
+			ft_putchar(*trav++);
+			len++;
+		}
+		if (*trav)
+		{
+			trav++;
+			offset = get_type(trav, &arg, &len);
+			trav += offset;
+		}
+	}
+	va_end(arg);
+	return (len);
 }

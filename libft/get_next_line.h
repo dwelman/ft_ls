@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlenwide.c                                    :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/26 09:06:58 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/09 08:14:32 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/16 07:44:23 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/27 15:15:53 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+# define BUFF_SIZE 10000
 
-size_t	ft_strlenwide(wchar_t *s)
-{
-	int	i;
+# include "libft.h"
 
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
+int	get_next_line(const int fd, char **line);
+
+#endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/20 13:14:35 by daviwel           #+#    #+#             */
-/*   Updated: 2016/05/20 13:14:36 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/10 13:28:43 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/13 13:46:35 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,21 @@
 
 char	*ft_strstr(const char *big, const char *little)
 {
-	int	count_i;
-	int	count_j;
-	int	count_c;
+	int		i;
+	int		l_len;
 
-	count_i = 0;
-	if (little[0] == '\0')
-		return ((char*)(big));
-	while (big[count_i] != '\0')
+	l_len = ft_strlen(little);
+	if (ft_strlen(big) >= ft_strlen(little) && little != NULL)
 	{
-		count_j = count_i;
-		count_c = 0;
-		while (big[count_j] == little[count_c])
+		while (*big)
 		{
-			count_j += 1;
-			count_c += 1;
-			if (little[count_c] == '\0')
-				return ((char*)(&big[count_i]));
+			i = 0;
+			while (big[i] != '\0' && little[i] != '\0' && big[i] == little[i])
+				i++;
+			if (i == l_len)
+				return (ft_strdup(big));
+			big++;
 		}
-		count_i += 1;
 	}
 	return (NULL);
 }

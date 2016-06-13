@@ -3,29 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/20 13:11:41 by daviwel           #+#    #+#             */
-/*   Updated: 2016/05/20 13:12:00 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/13 13:29:49 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/14 09:49:21 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
+size_t	ft_strlcat(char *const dest, char const *src, size_t size)
 {
 	char	*temp_dest;
 	char	*temp_src;
 	size_t	n;
 	size_t	len;
 
-	temp_dest = (char *)dst;
+	temp_dest = (char *)dest;
 	temp_src = (char *)src;
 	n = size;
 	while (*temp_dest != '\0' && n-- != 0)
 		temp_dest++;
-	len = temp_dest - dst;
-	n = size - n;
+	len = temp_dest - dest;
+	n = size - len;
 	if (n == 0)
 		return (len + ft_strlen(temp_src));
 	while (*temp_src != '\0')

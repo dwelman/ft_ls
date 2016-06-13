@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/20 13:14:05 by daviwel           #+#    #+#             */
-/*   Updated: 2016/05/20 13:14:06 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/10 14:23:31 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/10 14:24:28 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,29 @@
 
 char	*ft_strnstr(const char *big, const char *little, size_t len)
 {
-	int		count_i;
-	int		count_j;
-	int		count_c;
-	size_t	length;
+	size_t	i;
+	size_t	stop;
+	size_t	l_len;
+	char	*buff;
 
-	length = 0;
-	count_i = -1;
-	if (little[0] == '\0')
-		return ((char*)(big));
-	while (big[++count_i] != '\0' && length < len)
+	stop = 0;
+	i = 0;
+	l_len = ft_strlen(little);
+	if (ft_strlen(big) >= ft_strlen(little))
 	{
-		count_j = count_i;
-		count_c = 0;
-		while (big[count_j] == little[count_c])
+		buff = (char*)big;
+		while (buff && stop < len)
 		{
-			count_j += 1;
-			count_c += 1;
-			if (little[count_c] == '\0')
-				return ((char*)(&big[count_i]));
+			while (buff[i] == little[i] && stop < len)
+			{
+				i++;
+				stop++;
+			}
+			if (i == l_len)
+				return (buff);
+			buff++;
+			stop++;
 		}
-		length += 1;
 	}
 	return (NULL);
 }

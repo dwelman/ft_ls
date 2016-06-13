@@ -3,50 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/20 12:59:40 by daviwel           #+#    #+#             */
-/*   Updated: 2016/05/20 12:59:43 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/10 15:11:17 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/14 07:55:51 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_ilen(int n)
+static char	*rev(char *buf, int i)
 {
-	int	i;
+	char	*fresh;
+	int		j;
 
-	i = 0;
-	if (n < 0)
-		i += 1;
-	while (n /= 10)
-		i += 1;
-	return (i + 1);
+	j = 0;
+	fresh = (char*)malloc(sizeof(char) * i);
+	while (i)
+		fresh[j++] = buf[--i];
+	return (fresh);
 }
 
 char		*ft_itoa(int n)
 {
-	char	*str;
+	char	buf[12];
+	int		i;
+	int		min;
 
-	if ((str = (char*)malloc(sizeof(char) * ft_ilen(n))) == NULL)
-		return (NULL);
-	if (n >= 0)
+	if (n == 0)
+		return ("0\0");
+	i = 0;
+	buf[i++] = '\0';
+	min = (n < 0);
+	if (min)
+		n = n * -1;
+	while (n)
 	{
-		while (n != 0)
-		{
-			*--str = '0' + (n % 10);
-			n /= 10;
-		}
-		return (str);
+		buf[i++] = n % 10 + '0';
+		n = (n - n % 10) / 10;
 	}
-	else
-	{
-		while (n != 0)
-		{
-			*--str = '0' - (n % 10);
-			n /= 10;
-		}
-		*--str = '-';
-	}
-	return (str);
+	if (min)
+		buf[i++] = '-';
+	return (rev(buf, i));
 }

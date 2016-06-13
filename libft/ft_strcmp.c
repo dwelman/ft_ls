@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/20 13:09:20 by daviwel           #+#    #+#             */
-/*   Updated: 2016/05/20 13:09:33 by daviwel          ###   ########.fr       */
+/*   Created: 2016/05/10 14:50:28 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/05/13 17:01:15 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,26 @@
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
-	unsigned char	*str1;
-	unsigned char	*str2;
-	int				i;
+	size_t			i;
+	unsigned char	c1;
+	unsigned char	c2;
 
-	str1 = (unsigned char*)s1;
-	str2 = (unsigned char*)s2;
 	i = 0;
-	while (str1[i] != '\0' || str2[i] != '\0')
+	c1 = (unsigned char)*s1;
+	c2 = (unsigned char)*s2;
+	while (c1 == c2 && c1 != '\0' && c1 != '\0')
 	{
-		if (str1[i] != str2[i])
-			return (str1[i] - str2[i]);
-		i += 1;
+		i++;
+		c1 = (unsigned char)s1[i];
+		c2 = (unsigned char)s2[i];
+	}
+	while (c1 != '\0' && c2 != '\0')
+	{
+		if (c1 != c2)
+			return (c1 - c2);
+		i++;
+		c1 = (unsigned char)s1[i];
+		c2 = (unsigned char)s2[i];
 	}
 	return (0);
 }

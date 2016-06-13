@@ -3,63 +3,60 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/05/20 13:46:49 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/03 09:22:27 by daviwel          ###   ########.fr       */
+/*   Created: 2016/06/05 08:32:45 by ddu-toit          #+#    #+#             */
+/*   Updated: 2016/06/05 09:03:25 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "get_next_line.h"
 
-static int	ft_read(const int fd, char **file)
+static	int		read_line(int const fd, char **stock)
 {
-	char		*buff;
-	char		*nstr;
-	int			size;
+	char	*buff;
+	int		ret;
+	char	*temp;
 
-	if (!(buff = (char *)malloc(BUFF_SIZE + 1)))
+	if (!(buff = ft_strnew(sizeof(*buff) * (BUFF_SIZE + 1))))
 		return (-1);
-	size = read(fd, buff, BUFF_SIZE);
-	if (size > 0)
+	ret = read(fd, buff, BUFF_SIZE);
+	if (ret > 0)
 	{
-		buff[size] = '\0';
-		nstr = ft_strjoin(*file, buff);
-		if (!(nstr))
-			return (-1);
-		free(*file);
-		*file = nstr;
+		buff[ret] = '\0';
+		temp = ft_strjoin(*stock, buff);
+		free(*stock);
+		*stock = temp;
 	}
-	if (buff)
-		free(buff);
-	return (size);
+	free(buff);
+	return (ret);
 }
 
-int			get_next_line(const int fd, char **line)
+int				get_next_line(int const fd, char **line)
 {
-	static char	*str;
-	char		*endl_index;
-	int			ret;
+	static char			*str = NULL;
+	char				*bn;
+	int					ret;
 
-	if (!str && !(str = (char*)malloc(sizeof(char))))
+	if ((!str && (str = ft_strnew(sizeof(*str))) == NULL) || !line
+		|| fd < 0 || BUFF_SIZE < 0)
 		return (-1);
-	endl_index = ft_strchr(str, '\n');
-	while (endl_index == NULL)
+	bn = ft_strchr(str, '\n');
+	while (bn == NULL)
 	{
-		if ((ret = ft_read(fd, &str)) == 0)
+		ret = read_line(fd, &str);
+		if (ret == 0)
 		{
-			if ((endl_index = ft_strchr(str, '\0')) == str)
+			if (ft_strlen(str) == 0)
 				return (0);
+			str = ft_strjoin(str, "\n");
 		}
-		else if (ret < 0)
+		if (ret < 0)
 			return (-1);
 		else
-			endl_index = ft_strchr(str, '\n');
+			bn = ft_strchr(str, '\n');
 	}
-	if (!(*line = ft_strsub(str, 0, endl_index - str)))
-		return (-1);
-	endl_index = ft_strdup(endl_index + 1);
-	free(str);
-	str = endl_index;
+	*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(bn));
+	str = ft_strdup(bn + 1);
 	return (1);
 }
