@@ -6,7 +6,7 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 11:44:14 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/09 13:26:36 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/11 14:49:31 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,5 @@ void	init_info(t_info *info, int argc, char **argv)
 	info->f_t = 0;
 	info->argc = argc;
 	info->argv = argv;
+	info->flags = 0;
 }

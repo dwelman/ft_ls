@@ -6,79 +6,57 @@
 /*   By: daviwel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/09 07:36:58 by daviwel           #+#    #+#             */
-/*   Updated: 2016/06/10 12:03:29 by daviwel          ###   ########.fr       */
+/*   Updated: 2016/06/11 16:35:45 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	ls_none(t_info *info)
-{
-	struct dirent	*dent;
-
-	if (info->argc > 2)
-		while (info->i < info->argc)
-		{
-			if (info->dir != NULL)
-			{
-				ft_printf("%s:\n", info->argv[info->i]);
-				while ((dent = readdir(info->dir)) != NULL)
-				{
-					if (*dent->d_name != '.' || info->f_a == 1)
-						ft_printf("%s\n", dent->d_name);
-				}
-				if (info->i < info->argc - 1)
-					ft_putchar('\n');
-			}
-			else
-				ft_printf("%s : No such file or directory\n", info->argv[info->i]);
-			info->dir = opendir(info->argv[++info->i]);
-		}
-	else
-		while ((dent = readdir(info->dir)) != NULL)
-			if (*dent->d_name != '.' || info->f_a == 1)
-				ft_printf("%s\n", dent->d_name);
-}
-
 void	handle_disp(t_info *info)
 {
-	if (info->f_t == 1)
+	int	i;
+	DIR	*cur;
+
+	i = info->flags + 1;
+	if (i >= info->argc)
 	{
-		sort_print(info);
+		list_path(".", info);
 	}
 	else
-	{
-		ls_none(&info);
-	}
+		while (i < info->argc)
+		{
+			cur = opendir(info->argv[i]);
+			if (cur != NULL)
+			{
+				list_path(info->argv[i], info);
+				closedir(cur);
+			}
+			else
+				ft_printf("%s : No such file or directory\n", info->argv[i]);
+			i++;
+		}
 }
 
 int		main(int argc, char **argv)
 {
 	t_info			info;
 	int				done;
+	int				i;
 
 	init_info(&info, argc, argv);
 	done = 0;
-	info.i = 1;
-	while (info.i < info.argc && done == 0)
+	i = 1;
+	while (i < info.argc && done == 0)
 	{
-		if (info.argv[info.i][0] == '-')
+		if (info.argv[i][0] == '-')
 		{
-			get_flags(&info, info.argv[info.i]);
-			info.i++;
+			get_flags(&info, info.argv[i]);
+			info.flags++;
+			i++;
 		}
 		else
 			done = 1;
 	}
-	if (info.i >= argc)
-	{
-		info.dir = opendir(".");
-		info.i = 1;
-	}
-	else
-		info.dir = opendir(info.argv[info.i]);
 	handle_disp(&info);
-	if (info.dir != NULL)
-		closedir(info.dir);
 	return (0);
 }

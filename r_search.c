@@ -6,61 +6,27 @@
 /*   By: ddu-toit <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 15:28:30 by ddu-toit          #+#    #+#             */
-/*   Updated: 2016/06/11 10:31:36 by ddu-toit         ###   ########.fr       */
+/*   Updated: 2016/06/11 15:48:52 by ddu-toit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	list_view_print(struct stat stats, struct dirent *cur, t_info *info)
-{
-	char	*mtime;
-	
-	ft_printf( (S_ISDIR(stats.st_mode)) ? "d" : "-");
-	ft_printf( (stats.st_mode & S_IRUSR) ? "r" : "-");
-	ft_printf( (stats.st_mode & S_IWUSR) ? "w" : "-");
-	ft_printf( (stats.st_mode & S_IXUSR) ? "x" : "-");
-	ft_printf( (stats.st_mode & S_IRGRP) ? "r" : "-");
-	ft_printf( (stats.st_mode & S_IWGRP) ? "w" : "-");
-	ft_printf( (stats.st_mode & S_IXGRP) ? "x" : "-");
-	ft_printf( (stats.st_mode & S_IROTH) ? "r" : "-");
-	ft_printf( (stats.st_mode & S_IWOTH) ? "w" : "-");
-	ft_printf("\t%d",(int)stats.st_nlink);
-	ft_printf("\t%d", stats.st_uid);
-	ft_printf("\t%d", stats.st_gid);
-    ft_printf("\t%d",(int)stats.st_size);
-	mtime = ft_strchr(ctime(&stats.st_mtime), ' ') + 1;
-	ft_bzero(&mtime[ft_strlen(mtime) - 9], 9);
-	ft_printf("\t%s", mtime);
-	ft_printf("\t%s\n", cur->d_name);
-
-  //  printf("File inode: \t\t%d\n",stats.st_ino);
-   	//else errors
-}
-
-char	*build_path(struct dirent *cur, char **path, int fr)
+char	*build_path(struct dirent *cur, char *path)
 {
 	char	*new;
 	int		p_len;
 
-	p_len =  ft_strlen(*path);
+	p_len = ft_strlen(path);
 	if (p_len == 0)
 		return (NULL);
-//	ft_printf("path = %s len = %d\n", *path, p_len);
 	new = ft_strnew(p_len + cur->d_namlen + 1);
-//	ft_printf("new = %s\n", new);
-	ft_strcpy(new, *path);
-//	ft_printf("new = %s\n", new);
-	if (new[ft_strlen(*path) - 1] != '/')
+	ft_strcpy(new, path);
+	if (new[ft_strlen(path) - 1] != '/')
 		ft_strcat(new, "/");
-//	ft_printf("new = %s\n", new);
 	ft_strcat(new, cur->d_name);
-//	ft_printf("new = %s\n", new);
-//	if (fr && *path)
-//		free(*path);
 	new[p_len + ft_strlen(cur->d_name) + 1] = '\0';
-	//ft_printf("new = %s\n", new);
-	return (new);	
+	return (new);
 }
 
 void	subdir_list(char *path, t_info *info)
@@ -77,63 +43,61 @@ void	subdir_list(char *path, t_info *info)
 		{
 			while ((cur = readdir(dir)) != NULL)
 			{
-				f_path = build_path(cur, &path, 0);
-				stat(f_path , &stats);
+				f_path = build_path(cur, path);
+				stat(f_path, &stats);
+				free(f_path);
 				if (S_ISDIR(stats.st_mode) && *cur->d_name != '.')
 				{
-					f_path = build_path(cur, &path, 1);
+					f_path = build_path(cur, path);
 					list_path(f_path, info);
 				}
 			}
-		closedir(dir);
+			closedir(dir);
 		}
 	}
+}
+
+char	*init_dir_inf(t_info *info, char *path, int *f)
+{
+	*f = ft_count_files(path, 1);
+	info->stats = (struct stat**)malloc(sizeof(struct stat*) * *f + 1);
+	info->list = (char**)malloc(sizeof(char*) * *f + 1);
+	info->file = (char**)malloc(sizeof(char*) * *f + 1);
+	if (info->f_rec)
+		ft_printf("\n%s\n", path);
+	return (ft_strdup(path));
+}
+
+void	store_stat(t_info *info, struct dirent *cur, char *c_path, int i)
+{
+	char	*f_path;
+
+	f_path = build_path(cur, c_path);
+	info->stats[i] = (struct stat*)malloc(sizeof(struct stat));
+	stat(f_path, info->stats[i]);
+	free(f_path);
+	build_l(*info->stats[i], cur, info, i);
 }
 
 void	list_path(char *path, t_info *info)
 {
-	struct dirent	*cur;
 	DIR				*dir;
-	struct stat		stats;
-	char			*f_path;
 	char			*c_path;
+	int				i;
+	int				f;
+	struct dirent	*cur;
 
-	if (path)
+	i = -1;
+	c_path = init_dir_inf(info, path, &f);
+	dir = opendir(c_path);
+	if (dir != NULL)
 	{
-		c_path = ft_strdup(path);
-		ft_printf("\n%s\n", c_path);
-		dir = opendir(c_path);
-		if (dir != NULL)
-		{
-			while ((cur = readdir(dir)) != NULL)
-			{
-				f_path = build_path(cur, &c_path, 0);
-				stat(f_path , &stats);
-				free(f_path);
-				if ((info->f_lst && *cur->d_name != '.') || info->f_a)
-				{
-					if (info->f_t == 0)
-						list_view_print(stats, cur, info);
-				}
-				else if (*cur->d_name != '.' || info->f_a)
-					ft_printf("%s\n", cur->d_name);
-				//if	(info->f_t)
-					//sort_print
-			}
-			closedir(dir);
-			if (info->f_rec)
-				subdir_list(c_path, info);
-		}
+		while ((cur = readdir(dir)) != NULL && ++i < f)
+			store_stat(info, cur, c_path, i);
+		closedir(dir);
+		sort_print(info, f);
+		if (info->f_rec)
+			subdir_list(c_path, info);
+		free(c_path);
 	}
-}
-
-int	main(int argc, char **argv)
-{
-	t_info	info;
-	info.f_rec = 1;
-	info.f_a = 0;
-	info.f_lst = 1;
-	info.f_t = 0;
-	list_path(argv[1], &info);
-	return (0);
 }

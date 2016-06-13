@@ -6,13 +6,14 @@
 #    By: daviwel <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/06/09 07:29:09 by daviwel           #+#    #+#              #
-#    Updated: 2016/06/09 13:46:59 by daviwel          ###   ########.fr        #
+#    Updated: 2016/06/11 15:58:27 by ddu-toit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_ls
 
-SRC = ft_ls.c flags.c info.c
+SRC = ft_ls.c flags.c info.c r_search.c list_view_sort.c count_files.c\
+	  sort.c
 
 OBJ = $(SRC:.c=.o)
 
